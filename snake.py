@@ -35,7 +35,7 @@ max_snake_speed = 30  # Maximum speed limit for the snake
 font_style = pygame.font.SysFont(None, 50)
 score_font = pygame.font.SysFont(None, 35)
 
-# Initialize high score
+# Global variable for high score
 high_score = 0
 
 def our_snake(snake_block, snake_List):
@@ -81,6 +81,7 @@ class PowerUp:
 
 def gameLoop():
     global high_score
+
     game_over = False
     game_close = False
     game_paused = False
@@ -186,6 +187,8 @@ def gameLoop():
             foody = round(random.randrange(margin, dis_height - margin - snake_block) / 10.0) * 10.0
             Length_of_snake += 1
             snake_speed = min(snake_speed + 1, max_snake_speed)  # Increase speed but cap it
+            if Length_of_snake - 1 > high_score:
+                high_score = Length_of_snake - 1
 
         # Power-up logic
         if power_up_timer <= 0:
@@ -202,7 +205,10 @@ def gameLoop():
             power_up.draw()
             if x1 == power_up.x and y1 == power_up.y:
                 active_power_up = power_up.type
-                power_up_effect_timer = 100  # Duration the power-up effect lasts (in frames)
+                if active_power_up == 'slow_down':
+                    power_up_effect_timer = 30  # Slowness power-up lasts for 3 seconds (30 frames)
+                else:
+                    power_up_effect_timer = 100  # Speed boost lasts for the original duration
                 power_ups.remove(power_up)
 
         # Apply power-up effects
@@ -222,5 +228,4 @@ def gameLoop():
     pygame.quit()
     quit()
 
-# Start the game loop
 gameLoop()
